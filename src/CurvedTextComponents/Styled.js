@@ -16,23 +16,13 @@ export const TextInputDiv = styled.div`
   padding: 10px;
 `
 
-export const TextBox = styled.div`
-  width: 400px;
-  height: 400px;
+
+
+export const Canvas = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-
-  background-color: yellow;
-  box-shadow: 0 0 30px rgba(0, 0, 0, 0.2);
-  bottom: 0;
-`
-
-export const Span = styled.span`
-  font-size: 1.2em;
-  color: blue;
-  width: 0;
-  outline: 1px dashed gray;
+  background-color: lightblue;
 `
 
 export const WorkBox = styled.div`
@@ -50,10 +40,16 @@ export const TextBlock = styled.div`
   justify-content: center;
 `
 
-export const SpanOne = styled.span`
+export const Span = styled.span`
+  font-size: 1.2em;
+  color: blue;
+  outline: 1px dashed gray;
+`
+
+export const CharSpan = styled.span`
   display: flex;
-  transform-origin: center ;
-  margin:5px;
+  transform-origin: center;
+  margin: 3px;
 `
 export const TopCircle = styled.div`
   border: 1px solid grey;
@@ -68,16 +64,3 @@ export const BottomCircle = styled.div`
   transform-origin: top center;
 `
 
-//  outline: 1px dashed gray;
-//  border-radius: 100%;
-// display: flex;
-// justify-content: center;
-// align-items: center;
-
-// position: absolute;
-
-// width: ${(props) =>  props.width}px;
-// height: ${(props) => props.height}px;
-
-// display: grid;
-// place-items: center;

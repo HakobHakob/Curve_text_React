@@ -1,7 +1,5 @@
 import React, { useState } from "react"
-// import { ArcText } from "../test/ArcText"
-// import { CurvedText } from "./CurvedText"
-import { CurvedTextOne } from "./CurvedTextOne"
+import { CurvedText } from "./CurvedText"
 
 import * as Styled from "./Styled"
 
@@ -34,7 +32,7 @@ export const Heading = () => {
             max="10"
             onChange={(event) => setArcAngle(event.target.value)}
           />
-          {arcAngle  }
+          {arcAngle}
         </Styled.TextInputDiv>
 
         {/* <Styled.TextInputDiv>
@@ -50,13 +48,8 @@ export const Heading = () => {
           {radius}
         </Styled.TextInputDiv> */}
       </Styled.PropertiesDiv>
-      {/* <CurvedText text="My text" arcAngle={parseInt(arcAngle)} /> */}
 
-      <CurvedTextOne
-        text="My text "
-        arcAngle={parseInt(arcAngle)}
-      ></CurvedTextOne>
-      {/* <ArcText text = "My text is!" arcAngle={parseInt(arcAngle)}/> */}
+      <CurvedText text="My text " arcAngle={parseInt(arcAngle)}></CurvedText>
     </>
   )
 }
