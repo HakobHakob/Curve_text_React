@@ -1,9 +1,7 @@
 import React, { useState } from "react"
 import { Circle } from "./Circle"
-import { CurvedText } from "./CurvedText"
-import { Hero } from "./Hero"
 
-import * as Styled from "./Styled"
+import * as Styled from "./CurveTxtCSS"
 
 export const Heading = () => {
   const [text, setText] = useState("")
@@ -34,7 +32,6 @@ export const Heading = () => {
             max="100"
             onChange={(event) => setArcAngle(event.target.value)}
           />
-        
         </Styled.TextInputDiv>
 
         {/* <Styled.TextInputDiv>
@@ -51,9 +48,7 @@ export const Heading = () => {
         </Styled.TextInputDiv> */}
       </Styled.PropertiesDiv>
 
-      {/* <CurvedText text="My text is long text " arcAngle={parseInt(arcAngle)}></CurvedText> */}
-      {/* <Hero text="Greetings & Salutations" arc={450} radius={300} /> */}
-      <Circle text="Curved " arcAngle={parseInt(arcAngle)} />
-      </div>
+      <Circle text="Curved text!" arcAngle={parseInt(arcAngle)} />
+    </div>
   )
 }

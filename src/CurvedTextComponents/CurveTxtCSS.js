@@ -21,7 +21,7 @@ export const CurveTextCanvas = styled.div`
   justify-content: center;
   align-items: center;
   background-color: lightblue;
-  overflow:hidden;
+  overflow: hidden;
   pointer-events: none;
 `
 
@@ -30,22 +30,13 @@ export const TextBlock = styled.div`
 `
 
 export const CharsDiv = styled.div`
-  width: ${(({width})=> width * 10)}px;
-  height: ${(({width})=> width * 10)}px;
+  width: ${({ width }) => width * 10}px;
+  height: ${({ width }) => width * 10}px;
   position: relative;
-//   border-radius: 100%;
+  border-radius: 100%;
   box-shadow: 0 0 30px rgba(0, 0, 0, 0.2);
 `
 
 export const CharSpan = styled.span`
   width: 0;
 `
-//CharsDiv
-//display:grid;
-//   place-items:center normal;
-//==================================
-
-//CHarSpan
-//transform-origin: bottom center;
-//display: flex;
-//align-items:end;

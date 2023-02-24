@@ -1,5 +1,5 @@
 import React, { useCallback, useMemo } from "react"
-import * as Styled from "./CircleCSS"
+import * as Styled from "./CurveTxtCSS"
 
 export const Circle = ({ text, arcAngle }) => {
   const charactersArr = text.split("")
@@ -31,61 +31,22 @@ export const Circle = ({ text, arcAngle }) => {
 
       const angleRad = w / (2 * radius)
       const angle = (360 * angleRad) / Math.PI / charactersArr.length
-      const deg = index * angle - ((charactersArr.length - 2) * angle) / 2
+      const deg = index * angle - ((charactersArr.length - 1) * angle) / 2
 
       return deg
     },
     [arcAngle, charactersArr.length]
   )
 
-  const width = () => {
+  const txtWidth = () => {
     if (arcAngle === 0) return
     const charsDiv = document.querySelector("#charsDiv")
     const CSSObj = window.getComputedStyle(charsDiv)
-    const w = parseFloat(CSSObj.width)
-
-    return w
+    
+   return parseFloat(CSSObj.width)
   }
 
-  const wid = width()
-
-  const circleProperties = () => {
-    if (arcAngle === 0) return
-
-    const textBlock = document.getElementById("textBlock")
-    if (textBlock === null) return
-    const textBlockCSSobj = window.getComputedStyle(textBlock)
-
-    const W = parseFloat(textBlockCSSobj.width)
-    const H = parseFloat(textBlockCSSobj.height)
-
-    if (arcAngle > 0) {
-      const circleWidth = `${W - arcAngle}`
-      const circleHeight = `${H + arcAngle / 2}`
-
-      const widthProportion = circleWidth / circleHeight + arcAngle
-      const heightProportion = circleWidth / circleHeight + arcAngle / 2
-
-      return {
-        w: `${W - widthProportion}`,
-        h: `${H + heightProportion}`,
-      }
-    }
-    if (arcAngle < 0) {
-      const circleWidth = `${W + arcAngle}`
-      const circleHeight = `${H - arcAngle / 2}`
-
-      const widthProportion = circleWidth / circleHeight + arcAngle
-      const heightProportion = circleWidth / circleHeight + arcAngle / 2
-
-      return {
-        w: `${W + widthProportion}`,
-        h: `${H - heightProportion}`,
-      }
-    }
-  }
-
-  const circleProps = circleProperties()
+  const w = txtWidth()
 
   const arcText = useMemo(
     () =>
@@ -99,29 +60,25 @@ export const Circle = ({ text, arcAngle }) => {
             position: "absolute",
             height:
               diameter && `${diameter.circleDiameter / charactersArr.length}px`,
-            // bottom@ durs a galis
             bottom: (arcAngle < 0) ? `0` : ``,
             transformOrigin:  (arcAngle < 0) ? `top`:(arcAngle > 0)?`bottom `:``,
             transform:
               arcAngle === 0
                 ? `translate(0,0) rotate(0)`
-                : `translate(${wid / 2}px,${0}px) rotate(${rotate(index)}deg)`,
+                : `translate(${w / 2}px,${0}px) rotate(${rotate(index)}deg)`,
           }}
         >
           {char}
         </Styled.CharSpan>
       )),
-    [charactersArr, diameter, arcAngle, wid, rotate]
+    [charactersArr, arcAngle, diameter, w, rotate]
   )
 
   return (
     <Styled.CurveTextCanvas>
       <Styled.TextBlock
         id="textBlock"
-        style={{
-          minWidth: arcAngle === 0 ? `initial` : `${wid}px`,
-          // minHeight: arcAngle === 0? `initial`:`${hei}px`,
-        }}
+        
       >
         <Styled.CharsDiv
           id="charsDiv"
