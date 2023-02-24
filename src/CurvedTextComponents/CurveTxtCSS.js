@@ -23,10 +23,12 @@ export const CurveTextCanvas = styled.div`
   background-color: lightblue;
   overflow: hidden;
   pointer-events: none;
+  padding:50px;
 `
 
 export const TextBlock = styled.div`
   box-shadow: 0 0 30px rgba(0, 0, 0, 0.2);
+  border-radius: 100%;
 `
 
 export const CharsDiv = styled.div`

@@ -34,21 +34,10 @@ export const Heading = () => {
           />
         </Styled.TextInputDiv>
 
-        {/* <Styled.TextInputDiv>
-          <h4>Text Radius</h4>
-          <input
-            type="range"
-            value={radius}
-            step="10"
-            min="100"
-            max="5000"
-            onChange={(event) => setRadius(event.target.value)}
-          />
-          {radius}
-        </Styled.TextInputDiv> */}
+        
       </Styled.PropertiesDiv>
 
-      <Circle text="Curved text!" arcAngle={parseInt(arcAngle)} />
+      <Circle text={text} arcAngle={parseInt(arcAngle)} />
     </div>
   )
 }
