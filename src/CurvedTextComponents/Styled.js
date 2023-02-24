@@ -16,12 +16,11 @@ export const TextInputDiv = styled.div`
   padding: 10px;
 `
 
-
-
-export const Canvas = styled.div`
+export const CurveTextCanvas = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+
   background-color: lightblue;
 `
 
@@ -35,32 +34,43 @@ export const WorkBox = styled.div`
 
 export const TextBlock = styled.div`
   box-shadow: 0 0 30px rgba(0, 0, 0, 0.2);
-  position: relative;
   display: flex;
   justify-content: center;
+  align-items: center;
+  position: absolute;
 `
 
-export const Span = styled.span`
+export const CharsDiv = styled.div`
   font-size: 1.2em;
   color: blue;
   outline: 1px dashed gray;
+  position: absolute;
 `
 
 export const CharSpan = styled.span`
   display: flex;
   transform-origin: center;
-  margin: 3px;
+  position: relative;
+  transform-origin: bottom center;
+  margin: 2px;
 `
 export const TopCircle = styled.div`
-  border: 1px solid grey;
+  display: grid;
+  width: 100px;
+  height: 100px;
+  border: 1px solid black;
   border-radius: 50%;
+  position:relative;
+  display:grid;
+  place-items:center;
   opacity: 0.5;
   transform-origin: bottom center;
 `
 export const BottomCircle = styled.div`
-  border: 1px solid grey;
+  width: 100px;
+  height: 100px;
+  border: 1px solid black;
   border-radius: 50%;
   opacity: 0.5;
   transform-origin: top center;
 `
-

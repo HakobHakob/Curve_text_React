@@ -1,11 +1,14 @@
-import React, { useMemo } from "react"
+/* eslint-disable react-hooks/exhaustive-deps */
+// calculate distance between  point to circle center point with Pythagorean equation
+import React, { useCallback, useEffect, useMemo } from "react"
+// import { useEffect } from "react"
+
 import * as Styled from "./Styled"
 
 export const CurvedText = ({ text, arcAngle }) => {
   const charactersArr = text.split("")
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  const arcTextFn = (index) => {
+  const curveTxtData = () => {
     const topCircle = document.getElementById("topCircle")
     const topCircleRect = topCircle.getBoundingClientRect()
 
@@ -18,147 +21,200 @@ export const CurvedText = ({ text, arcAngle }) => {
     const letterSpan = textBlock.getElementsByTagName("span")
     const lettersArr = [...letterSpan]
 
-    const firstLetter = lettersArr.find((_, index) => index === 0)
-    const lastLetter = lettersArr.find(
-      (_, index) => index === lettersArr.length - 1
-    )
-
-    const firstLetterRect = firstLetter.getBoundingClientRect()
-    const lastLetterRect = lastLetter.getBoundingClientRect()
-
-    const textLength = lastLetterRect.x - firstLetterRect.x
-    const radius = textLength / 2
-
-    const textBlockCenterCoords = {
+    const getTxtBlockCenter = {
       x: textBlockRect.left + textBlockRect.width / 2,
       y: textBlockRect.top + textBlockRect.height / 2,
     }
+   
 
-    console.log("radius", textBlockCenterCoords)
-
-    const bottomCircleCenterCoords = {
-      x: bottomCircleRect.left + bottomCircleRect.width / 2,
-      y: bottomCircleRect.top + bottomCircleRect.height / 2,
-    }
-
-    const topCircleCenterCoords = {
+    const getTopCircleCenter = {
       x: topCircleRect.left + topCircleRect.width / 2,
       y: topCircleRect.top + topCircleRect.height / 2,
     }
 
-    const lettersCenterCoords = lettersArr.map((letter) => {
+    console.log("TXT:X",getTopCircleCenter.x)
+    console.log("TXT:Y",getTopCircleCenter.y)
+
+    const getBottomCircleCenter = {
+      x: bottomCircleRect.left + bottomCircleRect.width / 2,
+      y: bottomCircleRect.top + bottomCircleRect.height / 2,
+    }
+
+    return {
+      getTxtBlockCenter: getTxtBlockCenter,
+      charactersArr: lettersArr,
+      getTopCircleCenter: getTopCircleCenter,
+      getBottomCircleCenter: getBottomCircleCenter,
+    }
+  }
+
+  const curveText = (index, diameter) => {
+    if (arcAngle === 0) return
+
+    const txtCenter = curveTxtData().getTxtBlockCenter
+    const lettersArr = curveTxtData().charactersArr
+    const topCircleCenter = curveTxtData().getTopCircleCenter
+    const bottomCircleCenter = curveTxtData().getBottomCircleCenter
+
+    const getLetterCenter = () => {
+      const letter = lettersArr[index]
       const letterRect = letter.getBoundingClientRect()
 
       return {
         x: letterRect.x + letterRect.width / 2,
         y: letterRect.y + letterRect.height / 2,
       }
-    })
+    }
 
-    const letterCenterFromTxtCenter = (letterCenterCoords) => {
-      const leftLettersXDistance =
-        textBlockCenterCoords.x - letterCenterCoords.x
+    const letterCenter = getLetterCenter()
 
-      const rightLettersXDistance =
-        letterCenterCoords.x - textBlockCenterCoords.x
+    const getDistanceX = () => {
+      return txtCenter.x - letterCenter.x
+    }
 
-      if (textBlockCenterCoords.x >= letterCenterCoords.x) {
-        return leftLettersXDistance
-      } else {
-        return rightLettersXDistance
+    const distanceX = getDistanceX()
+
+    const getDistanceY = () => {
+      const topCenterY = txtCenter.y - topCircleCenter.y
+      const botoomCenterY = bottomCircleCenter.y - txtCenter.y
+
+      if (arcAngle >= 0) return topCenterY
+      if (arcAngle < 0) return botoomCenterY
+    }
+
+    const distanceY = getDistanceY()
+
+    // calculate distance between  point to circle center point with Pythagorean equation
+    const calculateHypotenuseDistance = () => {
+      const a = Math.pow(distanceX, 2)
+      const b = Math.pow(distanceY, 2)
+
+      return Math.sqrt(a + b)
+    }
+
+    const hypotenuseLength = calculateHypotenuseDistance()
+
+    const pointFromCircle = () => {
+      const circleRadius = diameter.circleDiameter / 2
+
+      return hypotenuseLength - circleRadius
+    }
+
+    const pointFromCircleDistance = pointFromCircle()
+
+    const translateY = () => {
+      return (pointFromCircleDistance * distanceY) / hypotenuseLength
+    }
+    const yVariation = translateY()
+
+    const translateX = () => {
+      return (pointFromCircleDistance * distanceX) / hypotenuseLength
+    }
+    const xVariation = translateX()
+
+    if (arcAngle > 0) {
+      return {
+        x: `${xVariation}`,
+        y: `${-yVariation}`,
       }
     }
 
-    const radiusCenterFromTxtCenter = () => {
-      const bottomRadiusStart =
-        bottomCircleCenterCoords.y - textBlockCenterCoords.y
-      const topRadiusStart = textBlockCenterCoords.y - topCircleCenterCoords.y
-
-      if (arcAngle >= 0) {
-        return bottomRadiusStart
-      } else {
-        return topRadiusStart
+    if (arcAngle < 0) {
+      return {
+        x: `${xVariation}`,
+        y: `${yVariation}`,
       }
     }
+  }
 
-    const translateCoords = lettersCenterCoords.map((letterCenterCoords) => {
-      const distanceX = letterCenterFromTxtCenter(letterCenterCoords)
-      const distanceY = radiusCenterFromTxtCenter()
+  const circleDiameter = () => {
+    if (arcAngle === 0) return
+    const textBlock = document.getElementById("textBlock")
 
-      //hypotenuse - nerqnadzig
-      const hypotenuseDistance = calculateDistance(distanceX, distanceY)
-      const pointDistanceFromCircle = pointFromCircle(
-        hypotenuseDistance,
-        radius
-      )
+    const textBlockCSSobj = window.getComputedStyle(textBlock)
+    const arcLength = `${parseFloat(textBlockCSSobj.width)}`
+
+    const radius = (arcLength * 180) / (Math.PI * Math.abs(arcAngle))
+    const diameter = radius * 2
+    return {
+      circleDiameter: diameter,
+    }
+  }
+  const diameter = circleDiameter()
+
+  // const arc = useCallback(() => {
+  //   if (arcAngle === 0) return
+  //   const lettersArr = curveTxtData().charactersArr
+  //   const radius = (lettersArr.length * 180) / (Math.PI * arcAngle)
+
+  //   return radius
+  // }, [arcAngle])
+
+  // const rad = arc()
+
+  const rotate = (index) => {
+    if (arcAngle === 0) return
+    const charsDiv = document.querySelector("#charsDiv")
+    if (charsDiv === null) return
+
+    const CSSObj = window.getComputedStyle(charsDiv)
+    const w = parseFloat(CSSObj.width)
+
+    const lettersArr = curveTxtData().charactersArr
+    const radius = (lettersArr.length * 180) / (Math.PI * arcAngle)
+
+    const angleRad = w / (2 * radius)
+    const angle = (360 * angleRad) / Math.PI / lettersArr.length
+    const deg = index * angle - ((lettersArr.length - 1) * angle) / 2
+    return -deg
+  }
+
+  // useEffect(() => {
+
+  // }, [])
+
+  // useEffect(()=>{
+  //   arc()
+  // },[arc, arcAngle])
+
+  const circleProperties = () => {
+    if (arcAngle === 0) return
+
+    const textBlock = document.getElementById("textBlock")
+    if (textBlock === null) return
+    const textBlockCSSobj = window.getComputedStyle(textBlock)
+
+    const W = parseFloat(textBlockCSSobj.width)
+    const H = parseFloat(textBlockCSSobj.height)
+
+    if (arcAngle > 0) {
+      const circleWidth = `${W - arcAngle}`
+      const circleHeight = `${H + arcAngle / 2}`
+
+      const widthProportion = circleWidth / circleHeight + arcAngle
+      const heightProportion = circleWidth / circleHeight + arcAngle / 2
 
       return {
-        x: translateX(pointDistanceFromCircle, distanceX, hypotenuseDistance),
-        y: translateY(distanceY, pointDistanceFromCircle, hypotenuseDistance),
+        w: `${W - widthProportion}`,
+        h: `${H + heightProportion}`,
       }
-    })
+    }
+    if (arcAngle < 0) {
+      const circleWidth = `${W + arcAngle}`
+      const circleHeight = `${H - arcAngle / 2}`
 
-    const charCoordsData = translateCoords.filter((_, i) => {
-      return i === index
-    })
+      const widthProportion = circleWidth / circleHeight + arcAngle
+      const heightProportion = circleWidth / circleHeight + arcAngle / 2
 
-    for (const position of charCoordsData) {
-      if (arcAngle >= 0) {
-        return `translate(${position.x}px , ${position.y}px) `
-      } else {
-        return `translate(${position.x}px , ${-position.y}px)`
+      // console.log("57", `${W + widthProportion}`)
+      return {
+        w: `${W + widthProportion}`,
+        h: `${H - heightProportion}`,
       }
     }
   }
 
-  // calculate distance between  point to circle center point with Pythagorean equation
-  const calculateDistance = (distanceX, distanceY) => {
-    return Math.sqrt(Math.pow(distanceX, 2) + Math.pow(distanceY, 2))
-  }
-
-  const pointFromCircle = (distance, radius) => {
-    return distance - radius
-  }
-
-  const translateY = (
-    distanceY,
-    pointDistanceFromCircle,
-    hypotenuseDistance
-  ) => {
-    return (distanceY * pointDistanceFromCircle) / hypotenuseDistance
-  }
-
-  const translateX = (
-    distanceX,
-    pointDistanceFromCircle,
-    hypotenuseDistance
-  ) => {
-    return (distanceX * pointDistanceFromCircle) / hypotenuseDistance
-  }
-
-  // const radius = 200
-
-  // const w = `${radius}`
-  // const h = `${radius}`
-
-  // N - axexi ankyunayin chapn a
-  // R - shrjanagci sharavix
-  // axexi erkarutyun L = (Pi * R * N) / 180
-
-  //======================================================
-
-  // const rotate = (index) => {
-  //   const angleRad = w / (2 * arcAngle)
-
-  //   const angle = (360 * angleRad) / Math.PI / charactersArr.length
-
-  //   // const deltaDegree = L / charactersArr.length
-  //   let deg = index * angle - (charactersArr.length * angle) / 2
-
-  //   // deg += deltaDegree
-
-  //   return `rotate(${2 * deg}deg)`
-  // }
+  const circleProps = circleProperties()
 
   const arcText = useMemo(
     () =>
@@ -170,59 +226,67 @@ export const CurvedText = ({ text, arcAngle }) => {
             transform:
               arcAngle === 0
                 ? `translate(0,0) rotate(0)`
-                : `${arcTextFn(index)}`,
+                : `translate(${curveText(index, diameter).x}px,${
+                    curveText(index, diameter).y
+                  }px) rotate(${0}deg)`,
           }}
         >
           {char}
         </Styled.CharSpan>
       )),
-    [arcAngle, arcTextFn, charactersArr]
+    [charactersArr, arcAngle, curveText, diameter]
   )
 
   return (
-    <Styled.Canvas>
+    <Styled.CurveTextCanvas>
       <Styled.WorkBox
         style={{
           border: "1px solid black",
-          position: "relative",
           pointerEvents: "none",
           width: `200px`,
-          height: `200px`,
+          height: `auto`,
         }}
       >
         <Styled.TopCircle
           style={{
-            display: arcAngle > 0 ? `none` : `block`,
-            transform: arcAngle > 0 ? `0` : `scale(${-arcAngle * 10})`,
-            // width:arcAngle >= 0 ? `0` : `${-arcAngle}px`,
-            // height:arcAngle >= 0 ? `0` : `${-arcAngle}px`,
+            // display: arcAngle <= 0 ? `none` : `block`,
+            width: diameter && `${diameter.circleDiameter}px`,
+            height: diameter && `${diameter.circleDiameter}px`,
+            // transform: `scale(${arcAngle})`,
           }}
           id="topCircle"
         ></Styled.TopCircle>
-
-        <Styled.TextBlock id="textBlock">
-          <Styled.Span
+        <Styled.TextBlock
+          id="textBlock"
+          style={{
+            minWidth: `initial`,
+            minHeight: `initial`,
+          }}
+        >
+          <Styled.CharsDiv
+            id="charsDiv"
             style={{
               position: "relative",
               margin: 0,
               display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
               pointerEvents: "initial",
             }}
           >
             {arcText}
-          </Styled.Span>
+          </Styled.CharsDiv>
         </Styled.TextBlock>
-
         <Styled.BottomCircle
           style={{
-            display: arcAngle < 0 ? `none` : `block`,
-            transform: arcAngle < 0 ? `0` : `scale(${arcAngle * 10})`,
-            // width:arcAngle <= 0 ? `0` : `${arcAngle}px`,
-            // height:arcAngle <= 0 ? `0` : `${arcAngle}px`,
+            // display: arcAngle >= 0 ? `none` : `block`,
+            width: diameter && `${diameter.circleDiameter}px`,
+            height: diameter && `${diameter.circleDiameter}px`,
+            // transform: `scale(${-arcAngle})`,
           }}
           id="bottomCircle"
         ></Styled.BottomCircle>
       </Styled.WorkBox>
-    </Styled.Canvas>
+    </Styled.CurveTextCanvas>
   )
 }

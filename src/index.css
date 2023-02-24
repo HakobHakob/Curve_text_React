@@ -8,9 +8,46 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  /* background-color: grey; */
 }
 
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+/* html {
+  line-height: 1.15;
+  -webkit-text-size-adjust: 100%;
+}
+h1 {
+  margin: 0;
+}
+
+.wrapper {
+  position: fixed;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+}
+
+.wrapper h1 {
+  font-family: 'Amatic SC', cursive;
+  font-size: 64px;
+  color: antiquewhite;
+  text-align: center;
+  position: absolute;
+  left: 50%;
+
+  top: calc(50% - 64px);
+  -webkit-transform: translate(-50%, calc(-50% - 64px));
+  -ms-transform: translate(-50%, calc(-50% - 64px));
+  transform: translate(-50%, calc(-50% - 64px));
+}
+
+.wrapper h1 span {
+  position: absolute;
+} */
+
+
