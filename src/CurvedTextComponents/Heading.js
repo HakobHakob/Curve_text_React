@@ -37,7 +37,8 @@ export const Heading = () => {
         
       </Styled.PropertiesDiv>
 
-      <Circle text={text} arcAngle={parseInt(arcAngle)} />
+      {/* <Circle text={text} arcAngle={parseInt(arcAngle)} /> */}
+      <Circle text="Hello moto dokhgf llkh!" arcAngle={parseInt(arcAngle)} />
     </div>
   )
 }

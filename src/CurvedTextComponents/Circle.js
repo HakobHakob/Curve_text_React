@@ -42,11 +42,29 @@ export const Circle = ({ text, arcAngle }) => {
     if (arcAngle === 0) return
     const charsDiv = document.querySelector("#charsDiv")
     const CSSObj = window.getComputedStyle(charsDiv)
-    
-   return parseFloat(CSSObj.width)
+
+    return parseFloat(CSSObj.width)
   }
 
   const w = txtWidth()
+
+  const txtCenter = () => {
+    if (arcAngle === 0) return
+    const txtBlock = document.getElementById("textBlock")
+    const { top, left, width, height } = txtBlock.getBoundingClientRect()
+
+    const X = left + width / 2
+    const Y = top + height / 2
+
+    const getTxtBlockCenter = {
+      x: X,
+      y: Y,
+    }
+
+    return getTxtBlockCenter
+  }
+
+  const c = txtCenter()
 
   const arcText = useMemo(
     () =>
@@ -55,39 +73,41 @@ export const Circle = ({ text, arcAngle }) => {
           key={`span-key-${index}`}
           id={index}
           style={{
-            display:(arcAngle < 0) ? `flex`:`block`,
-            alignItems:(arcAngle < 0) ? `end`:``,
-            position: "absolute",
+            display: arcAngle !== 0 ? `flex` : `block`,
+            alignItems: arcAngle < 0 ? `flex-end` : arcAngle > 0 ? `flex-start ` : ``,
+            position: arcAngle === 0 ? `static` : `absolute`,
+           
             height:
               diameter && `${diameter.circleDiameter / charactersArr.length}px`,
-            bottom: (arcAngle < 0) ? `0` : ``,
-            transformOrigin:  (arcAngle < 0) ? `top`:(arcAngle > 0)?`bottom `:``,
+            bottom: arcAngle < 0 ? `0` : ``,
+            top: arcAngle > 0 ? `0` : ``,
+            transformOrigin: arcAngle < 0 ? `top` : arcAngle > 0 ? `bottom ` : ``,
+            // transformOrigin: c &&`${c.x}px ${c.y}px`,
             transform:
               arcAngle === 0
                 ? `translate(0,0) rotate(0)`
-                : `translate(${w / 2}px,${0}px) rotate(${rotate(index)}deg)`,
+                : `translate(${0}px,${0}px) rotate(${rotate(index)}deg)`,
+                // : `${c} rotate(${rotate(index)}deg)`,
           }}
         >
           {char}
         </Styled.CharSpan>
       )),
-    [charactersArr, arcAngle, diameter, w, rotate]
+    [charactersArr, arcAngle, diameter, rotate]
   )
 
   return (
     <Styled.CurveTextCanvas>
-      <Styled.TextBlock
-        id="textBlock"
-        
-      >
+      <Styled.TextBlock id="textBlock">
         <Styled.CharsDiv
           id="charsDiv"
+          angle={arcAngle}
           width={charactersArr.length}
           style={{
             // width: circleProps && `${circleProps.w }px`,
             // height: circleProps && `${circleProps.h }px`,
-            display: (arcAngle !== 0) ?  `flex` : `inline-block`,
             background: `pink`,
+            
           }}
         >
           {arcText}
